@@ -20,14 +20,29 @@ class _TabsState extends State<TabsScreen> {
   void _toggleMealFavitestatus(Meal meal) {
     final isExisting = _favoriteMeals.contains(meal);
 
+    void _showMessage(String message) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+    }
+
     if (isExisting) {
-      _favoriteMeals.remove(meal);
+      setState(() {
+        _favoriteMeals.remove(meal);
+      });
+      _showMessage('Meal is no longer favorite.');
     } else {
-      _favoriteMeals.add(meal);
+      setState(() {
+        _favoriteMeals.add(meal);
+      });
+      _showMessage('Marked as a favorite');
     }
   }
 
-  void _selectPage (int index) {
+  void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
@@ -35,12 +50,16 @@ class _TabsState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget activePage = CategoriesScreen(onToggleFavorite: _toggleMealFavitestatus,);
+    Widget activePage = CategoriesScreen(
+      onToggleFavorite: _toggleMealFavitestatus,
+    );
     var activePageTitle = 'Categories';
 
-    if(_selectedPageIndex == 1) {
-      activePage = MealsScreen(meals: [], onToggleFavorite: _toggleMealFavitestatus,);
+    if (_selectedPageIndex == 1) {
+      activePage = MealsScreen(
+        meals: _favoriteMeals,
+        onToggleFavorite: _toggleMealFavitestatus,
+      );
       activePageTitle = 'Your Favorites';
     }
 
@@ -53,10 +72,11 @@ class _TabsState extends State<TabsScreen> {
         onTap: _selectPage,
         currentIndex: _selectedPageIndex,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.set_meal), label: 'Categories'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.set_meal), label: 'Categories'),
           BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites'),
-
-      ],),
+        ],
+      ),
     );
   }
 }
