@@ -73,11 +73,15 @@ class _CategoriesScreenState extends State<CategoriesScreen>
             )
         ],
       ),
-      builder: (context, child) => Padding(
-          padding: EdgeInsets.only(
-            top: 100 - _animationContoller.value * 100,
-          ),
-          child: child),
+      builder: (context, child) => SlideTransition(
+        position: Tween(
+          begin: const Offset(0, 0.3),
+          end: const Offset(0, 0),
+        ).animate(
+          CurvedAnimation(parent: _animationContoller, curve: Curves.easeInOut),
+        ),
+        child: child,
+      ),
     );
   }
 }
